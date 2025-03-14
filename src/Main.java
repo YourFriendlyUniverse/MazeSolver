@@ -19,33 +19,53 @@ public class Main {
         while (!(currCoord[0] == maze.length - 1 && currCoord[1] == maze[maze.length - 1].length - 1)){
             if (isFork(maze, currCoord, prevDirection, solution)){
                 addForks(maze, forks, currCoord, prevDirection);
+                currCoord = forks.getLast().nextCoord;
+                solution.add(currCoord);
+                prevDirection = forks.getLast().getPrevDirection();
+                forks.removeLast();
             }
-//            else if (isDeadEnd(maze, currCoord, prevDirection)){
-//                currCoord = goBack();
-//            }
+            else if (isDeadEnd(maze, currCoord, prevDirection)){
+                currCoord = goBack(forks.getLast(), solution);
+                solution.add(currCoord);
+                prevDirection = forks.getLast().getPrevDirection();
+                forks.removeLast();
+            }
             else{
                 prevDirection = getPrevDirection(currCoord, solution.getLast());
                 currCoord = solution.getLast();
             }
-
         }
 
-        for (int[] coord : solution){
-            System.out.print("(" + coord[0] +"," + coord[1] +")" + "->");
+        for (int i = 0; i < solution.size(); i++) {
+            if (i != solution.size() - 1) {
+                System.out.print("(" + solution.get(i)[0] + ", " + solution.get(i)[1] + ")" + " ---> ");
+            } else {
+                System.out.println("(" + solution.get(i)[0] + ", " + solution.get(i)[1] + ")");
+            }
         }
-        System.out.println("finish");
-
     }
 
-//    private static boolean isDeadEnd(String[][] maze, int[] curr, int prev) {
-//        if (prev == 0){
-//            return false;
-//        }
-//        else if ()
-//    }
+    private static int[] goBack(Fork mostRecentFork, ArrayList<int[]> solution) {
+        for (int i = solution.size() - 1; i >= 0; i--){
+            if (!(solution.get(i)[0] == mostRecentFork.getCoord()[0] && solution.get(i)[1] == mostRecentFork.getCoord()[1])){
+                solution.remove(i);
+            }
+            else{
+                return mostRecentFork.getNextCoord();
+            }
+        }
+        System.out.println("Warp back has failed");
+        return new int[]{0, 0};
+    }
+
+    private static boolean isDeadEnd(String[][] maze, int[] curr, int prev) {
+        if (prev == 0){
+            return false;
+        }
+        else return !canGoUp(maze, curr, prev) && !canGoRight(maze, curr, prev) && !canGoDown(maze, curr, prev) && !canGoLeft(maze, curr, prev);
+    }
 
     private static int getPrevDirection(int[] curr, int[] next) {
-        System.out.println(Arrays.toString(curr) + ", " + Arrays.toString(next));
         int y_diff = curr[0] - next[0];
         if (y_diff == -1){
             return 1;
@@ -60,7 +80,7 @@ public class Main {
         else if (x_diff == 1){
             return 2;
         }
-        System.out.println("uh oh");
+        System.out.println("[Main getPrevDirection]: uh oh");
         return 0;
     }
 
@@ -105,8 +125,6 @@ public class Main {
                 numOfNextPoints++;
             }
         }
-
-        System.out.println(Arrays.toString(validNextPoints));
 
         if (numOfNextPoints > 1){
             return true;
