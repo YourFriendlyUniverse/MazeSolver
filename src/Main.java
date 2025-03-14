@@ -20,6 +20,9 @@ public class Main {
             if (isFork(maze, currCoord, prevDirection, solution)){
                 addForks(maze, forks, currCoord, prevDirection);
             }
+//            else if (isDeadEnd(maze, currCoord, prevDirection)){
+//                currCoord = goBack();
+//            }
             else{
                 prevDirection = getPrevDirection(currCoord, solution.getLast());
                 currCoord = solution.getLast();
@@ -33,6 +36,13 @@ public class Main {
         System.out.println("finish");
 
     }
+
+//    private static boolean isDeadEnd(String[][] maze, int[] curr, int prev) {
+//        if (prev == 0){
+//            return false;
+//        }
+//        else if ()
+//    }
 
     private static int getPrevDirection(int[] curr, int[] next) {
         System.out.println(Arrays.toString(curr) + ", " + Arrays.toString(next));
@@ -55,16 +65,16 @@ public class Main {
     }
 
     private static void addForks(String[][] maze, ArrayList<Fork> forks, int[] curr, int prev) {
-        if (curr[0] != 0 && prev != 1 && maze[curr[0] - 1][curr[1]].equals(".")){
+        if (canGoUp(maze, curr, prev)){
             forks.add(new Fork(curr, new int[]{curr[0] - 1, curr[1]}));
         }
-        if (curr[1] != maze[curr[0]].length - 1 && prev != 2 && maze[curr[0]][curr[1] + 1].equals(".")){
+        if (canGoRight(maze, curr, prev)){
             forks.add(new Fork(curr, new int[]{curr[0], curr[1] + 1}));
         }
-        if (curr[0] != maze.length - 1 && prev != 3 && maze[curr[0] + 1][curr[1]].equals(".")){
+        if (canGoDown(maze, curr, prev)){
             forks.add(new Fork(curr, new int[]{curr[0] + 1, curr[1]}));
         }
-        if (curr[1] != 0 && prev != 4 && maze[curr[0]][curr[1] - 1].equals(".")){
+        if (canGoLeft(maze, curr, prev)){
             forks.add(new Fork(curr, new int[]{curr[0], curr[1] - 1}));
         }
     }
@@ -72,19 +82,19 @@ public class Main {
     private static boolean isFork(String[][] maze, int[] curr, int prev, ArrayList<int[]> solution) {
         boolean[] validNextPoints = new boolean[4];
         int nextDir = 0;
-        if (curr[0] != 0 && prev != 1 && maze[curr[0] - 1][curr[1]].equals(".")){
+        if (canGoUp(maze, curr, prev)){
             validNextPoints[0] = true;
             nextDir = 1;
         }
-        if (curr[1] != maze[curr[0]].length - 1 && prev != 2 && maze[curr[0]][curr[1] + 1].equals(".")){
+        if (canGoRight(maze, curr, prev)){
             validNextPoints[1] = true;
             nextDir = 2;
         }
-        if (curr[0] != maze.length - 1 && prev != 3 && maze[curr[0] + 1][curr[1]].equals(".")){
+        if (canGoDown(maze, curr, prev)){
             validNextPoints[2] = true;
             nextDir = 3;
         }
-        if (curr[1] != 0 && prev != 4 && maze[curr[0]][curr[1] - 1].equals(".")){
+        if (canGoLeft(maze, curr, prev)){
             validNextPoints[3] = true;
             nextDir = 4;
         }
@@ -111,6 +121,22 @@ public class Main {
             return false;
         }
 
+    }
+
+    private static boolean canGoUp(String[][] maze, int[] curr, int prev){
+        return curr[0] != 0 && prev != 1 && maze[curr[0] - 1][curr[1]].equals(".");
+    }
+
+    private static boolean canGoRight(String[][] maze, int[] curr, int prev){
+        return curr[1] != maze[curr[0]].length - 1 && prev != 2 && maze[curr[0]][curr[1] + 1].equals(".");
+    }
+
+    private static boolean canGoDown(String[][] maze, int[] curr, int prev){
+        return curr[0] != maze.length - 1 && prev != 3 && maze[curr[0] + 1][curr[1]].equals(".");
+    }
+
+    private static boolean canGoLeft(String[][] maze, int[] curr, int prev){
+        return curr[1] != 0 && prev != 4 && maze[curr[0]][curr[1] - 1].equals(".");
     }
 
     public static String[][] getMaze(String fileName) {
