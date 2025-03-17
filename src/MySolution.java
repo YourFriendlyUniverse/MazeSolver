@@ -1,10 +1,9 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
-public class Main {
+public class MySolution {
     public static void main(String[] args) {
 
         ArrayList<Fork> forks = new ArrayList<Fork>();
@@ -80,7 +79,7 @@ public class Main {
         else if (x_diff == 1){
             return 2;
         }
-        System.out.println("[Main getPrevDirection]: uh oh");
+        System.out.println("[getPrevDirection]: uh oh");
         return 0;
     }
 
